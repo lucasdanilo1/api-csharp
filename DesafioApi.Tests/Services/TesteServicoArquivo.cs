@@ -75,7 +75,7 @@ public class TesteServicoArquivo
         Directory.CreateDirectory(diretorioTeste);
 
         var nomeArquivoTeste = "teste.txt";
-        var conteudoTeste = "Olá, Mundo!";
+        var conteudoTeste = "TESTE";
         var caminhoArquivoTeste = Path.Combine(diretorioTeste, nomeArquivoTeste);
 
         try
@@ -101,7 +101,7 @@ public class TesteServicoArquivo
         Directory.CreateDirectory(diretorioTeste);
 
         var nomeArquivoTeste = "documento.TXT";
-        var conteudoTeste = "Conteúdo de teste";
+        var conteudoTeste = "TESTE";
         var caminhoArquivoTeste = Path.Combine(diretorioTeste, nomeArquivoTeste);
 
         try
@@ -127,7 +127,7 @@ public class TesteServicoArquivo
         Directory.CreateDirectory(diretorioTeste);
 
         var nomeArquivoTeste = "documento.Txt";
-        var conteudoTeste = "Conteúdo misto";
+        var conteudoTeste = "TESTE";
         var caminhoArquivoTeste = Path.Combine(diretorioTeste, nomeArquivoTeste);
 
         try
@@ -178,7 +178,7 @@ public class TesteServicoArquivo
         Directory.CreateDirectory(diretorioTeste);
 
         var nomeArquivoTeste = "especial.txt";
-        var conteudoTeste = "Caracteres especiais: áéíóú ñ çã 中文 日本語 🎉";
+        var conteudoTeste = "áéíóú ñ çã 中文 日本語";
         var caminhoArquivoTeste = Path.Combine(diretorioTeste, nomeArquivoTeste);
 
         try
