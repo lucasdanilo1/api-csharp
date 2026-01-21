@@ -17,7 +17,7 @@ public class TesteTokenService
     {
         _jwtSettings = new JwtSettings
         {
-            SecretKey = "ChaveSecretaMuitoLongaParaTestesDe256Bits!@#$%",
+            SecretKey = "secret",
             Issuer = "TesteIssuer",
             Audience = "TesteAudience",
             MinutosExpiracao = 60
