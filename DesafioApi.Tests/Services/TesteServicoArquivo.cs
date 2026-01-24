@@ -196,4 +196,221 @@ public class TesteServicoArquivo
                 Directory.Delete(diretorioTeste, true);
         }
     }
+
+    [Fact]
+    public async Task AtualizarArquivoAsync_QuandoCaminhoVazio_LancaArgumentException()
+    {
+        await Assert.ThrowsAsync<ArgumentException>(() => _servico.AtualizarArquivoAsync("", "novo conteudo"));
+    }
+
+    [Fact]
+    public async Task AtualizarArquivoAsync_QuandoCaminhoNulo_LancaArgumentNullException()
+    {
+        await Assert.ThrowsAsync<ArgumentNullException>(() => _servico.AtualizarArquivoAsync(null!, "novo conteudo"));
+    }
+
+    [Fact]
+    public async Task AtualizarArquivoAsync_QuandoCaminhoApenasEspacos_LancaArgumentException()
+    {
+        await Assert.ThrowsAsync<ArgumentException>(() => _servico.AtualizarArquivoAsync("   ", "novo conteudo"));
+    }
+
+    [Fact]
+    public async Task AtualizarArquivoAsync_QuandoArquivoNaoExiste_LancaFileNotFoundException()
+    {
+        await Assert.ThrowsAsync<FileNotFoundException>(() =>
+            _servico.AtualizarArquivoAsync("C:\\arquivo_inexistente.txt", "novo conteudo"));
+    }
+
+    [Fact]
+    public async Task AtualizarArquivoAsync_QuandoExtensaoNaoTxt_LancaArgumentException()
+    {
+        var excecao = await Assert.ThrowsAsync<ArgumentException>(() =>
+            _servico.AtualizarArquivoAsync("documento.pdf", "novo conteudo"));
+
+        Assert.Contains("Apenas arquivos .txt são permitidos", excecao.Message);
+    }
+
+    [Theory]
+    [InlineData("documento.doc")]
+    [InlineData("imagem.png")]
+    [InlineData("script.js")]
+    [InlineData("dados.json")]
+    [InlineData("arquivo.zip")]
+    [InlineData("arquivo.exe")]
+    public async Task AtualizarArquivoAsync_ComVariasExtensoesNaoTxt_LancaArgumentException(string nomeArquivo)
+    {
+        await Assert.ThrowsAsync<ArgumentException>(() =>
+            _servico.AtualizarArquivoAsync(nomeArquivo, "novo conteudo"));
+    }
+
+    [Fact]
+    public async Task AtualizarArquivoAsync_QuandoArquivoSemExtensao_LancaArgumentException()
+    {
+        var excecao = await Assert.ThrowsAsync<ArgumentException>(() =>
+            _servico.AtualizarArquivoAsync("arquivo_sem_extensao", "novo conteudo"));
+
+        Assert.Contains("Apenas arquivos .txt são permitidos", excecao.Message);
+    }
+
+    [Fact]
+    public async Task AtualizarArquivoAsync_QuandoArquivoExiste_AtualizaConteudo()
+    {
+        var diretorioTeste = Path.Combine(Path.GetTempPath(), "TestesDesafioApi");
+        Directory.CreateDirectory(diretorioTeste);
+
+        var nomeArquivoTeste = "atualizar.txt";
+        var conteudoInicial = "CONTEUDO INICIAL";
+        var novoConteudo = "CONTEUDO ATUALIZADO";
+        var caminhoArquivoTeste = Path.Combine(diretorioTeste, nomeArquivoTeste);
+
+        try
+        {
+            await File.WriteAllTextAsync(caminhoArquivoTeste, conteudoInicial);
+
+            await _servico.AtualizarArquivoAsync(caminhoArquivoTeste, novoConteudo);
+
+            var conteudoFinal = await File.ReadAllTextAsync(caminhoArquivoTeste);
+            Assert.Equal(novoConteudo, conteudoFinal);
+        }
+        finally
+        {
+            if (Directory.Exists(diretorioTeste))
+                Directory.Delete(diretorioTeste, true);
+        }
+    }
+
+    [Fact]
+    public async Task AtualizarArquivoAsync_QuandoExtensaoTxtMaiuscula_Sucede()
+    {
+        var diretorioTeste = Path.Combine(Path.GetTempPath(), "TestesDesafioApi");
+        Directory.CreateDirectory(diretorioTeste);
+
+        var nomeArquivoTeste = "atualizar.TXT";
+        var conteudoInicial = "INICIAL";
+        var novoConteudo = "ATUALIZADO";
+        var caminhoArquivoTeste = Path.Combine(diretorioTeste, nomeArquivoTeste);
+
+        try
+        {
+            await File.WriteAllTextAsync(caminhoArquivoTeste, conteudoInicial);
+
+            await _servico.AtualizarArquivoAsync(caminhoArquivoTeste, novoConteudo);
+
+            var conteudoFinal = await File.ReadAllTextAsync(caminhoArquivoTeste);
+            Assert.Equal(novoConteudo, conteudoFinal);
+        }
+        finally
+        {
+            if (Directory.Exists(diretorioTeste))
+                Directory.Delete(diretorioTeste, true);
+        }
+    }
+
+    [Fact]
+    public async Task AtualizarArquivoAsync_QuandoExtensaoTxtMista_Sucede()
+    {
+        var diretorioTeste = Path.Combine(Path.GetTempPath(), "TestesDesafioApi");
+        Directory.CreateDirectory(diretorioTeste);
+
+        var nomeArquivoTeste = "atualizar.Txt";
+        var conteudoInicial = "INICIAL";
+        var novoConteudo = "ATUALIZADO";
+        var caminhoArquivoTeste = Path.Combine(diretorioTeste, nomeArquivoTeste);
+
+        try
+        {
+            await File.WriteAllTextAsync(caminhoArquivoTeste, conteudoInicial);
+
+            await _servico.AtualizarArquivoAsync(caminhoArquivoTeste, novoConteudo);
+
+            var conteudoFinal = await File.ReadAllTextAsync(caminhoArquivoTeste);
+            Assert.Equal(novoConteudo, conteudoFinal);
+        }
+        finally
+        {
+            if (Directory.Exists(diretorioTeste))
+                Directory.Delete(diretorioTeste, true);
+        }
+    }
+
+    [Fact]
+    public async Task AtualizarArquivoAsync_QuandoNovoConteudoVazio_AtualizaParaVazio()
+    {
+        var diretorioTeste = Path.Combine(Path.GetTempPath(), "TestesDesafioApi");
+        Directory.CreateDirectory(diretorioTeste);
+
+        var nomeArquivoTeste = "limpar.txt";
+        var conteudoInicial = "CONTEUDO A SER REMOVIDO";
+        var caminhoArquivoTeste = Path.Combine(diretorioTeste, nomeArquivoTeste);
+
+        try
+        {
+            await File.WriteAllTextAsync(caminhoArquivoTeste, conteudoInicial);
+
+            await _servico.AtualizarArquivoAsync(caminhoArquivoTeste, string.Empty);
+
+            var conteudoFinal = await File.ReadAllTextAsync(caminhoArquivoTeste);
+            Assert.Empty(conteudoFinal);
+        }
+        finally
+        {
+            if (Directory.Exists(diretorioTeste))
+                Directory.Delete(diretorioTeste, true);
+        }
+    }
+
+    [Fact]
+    public async Task AtualizarArquivoAsync_QuandoConteudoComCaracteresEspeciais_AtualizaCorretamente()
+    {
+        var diretorioTeste = Path.Combine(Path.GetTempPath(), "TestesDesafioApi");
+        Directory.CreateDirectory(diretorioTeste);
+
+        var nomeArquivoTeste = "especial.txt";
+        var conteudoInicial = "Inicial";
+        var novoConteudo = "áéíóú ñ çã 中文 日本語";
+        var caminhoArquivoTeste = Path.Combine(diretorioTeste, nomeArquivoTeste);
+
+        try
+        {
+            await File.WriteAllTextAsync(caminhoArquivoTeste, conteudoInicial);
+
+            await _servico.AtualizarArquivoAsync(caminhoArquivoTeste, novoConteudo);
+
+            var conteudoFinal = await File.ReadAllTextAsync(caminhoArquivoTeste);
+            Assert.Equal(novoConteudo, conteudoFinal);
+        }
+        finally
+        {
+            if (Directory.Exists(diretorioTeste))
+                Directory.Delete(diretorioTeste, true);
+        }
+    }
+
+    [Fact]
+    public async Task AtualizarArquivoAsync_QuandoConteudoComQuebrasDeLinha_AtualizaCorretamente()
+    {
+        var diretorioTeste = Path.Combine(Path.GetTempPath(), "TestesDesafioApi");
+        Directory.CreateDirectory(diretorioTeste);
+
+        var nomeArquivoTeste = "multilinhas.txt";
+        var conteudoInicial = "Inicial";
+        var novoConteudo = "Linha 1\nLinha 2\nLinha 3";
+        var caminhoArquivoTeste = Path.Combine(diretorioTeste, nomeArquivoTeste);
+
+        try
+        {
+            await File.WriteAllTextAsync(caminhoArquivoTeste, conteudoInicial);
+
+            await _servico.AtualizarArquivoAsync(caminhoArquivoTeste, novoConteudo);
+
+            var conteudoFinal = await File.ReadAllTextAsync(caminhoArquivoTeste);
+            Assert.Equal(novoConteudo, conteudoFinal);
+        }
+        finally
+        {
+            if (Directory.Exists(diretorioTeste))
+                Directory.Delete(diretorioTeste, true);
+        }
+    }
 }

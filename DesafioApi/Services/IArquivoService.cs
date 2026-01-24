@@ -1,8 +1,9 @@
-using DesafioApi.Dtos;
+using DesafioApi.Dtos.Response;
 
 namespace DesafioApi.Services;
 
 public interface IArquivoService
 {
-    Task<TextoLeituraArquivoDto> LerArquivoAsync(string caminho);
+    Task<LeituraArquivoResponse> LerArquivoAsync(string caminho);
+    Task AtualizarArquivoAsync(string caminho, string novoConteudo);
 }

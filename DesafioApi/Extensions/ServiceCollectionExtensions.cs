@@ -23,6 +23,7 @@ public static class ServiceCollectionExtensions
     {
         var jwt = config.GetSection("JwtSettings").Get<JwtSettings>()!;
         services.Configure<JwtSettings>(config.GetSection("JwtSettings"));
+        services.Configure<AdminPadraoSettings>(config.GetSection("AdminPadraoSettings"));
 
         services.AddAuthentication(o =>
         {
@@ -33,8 +34,8 @@ public static class ServiceCollectionExtensions
         {
             o.TokenValidationParameters = new()
             {
-                ValidIssuer = jwt.Issuer,
-                ValidAudience = jwt.Audience,
+                ValidIssuer = jwt.Issuer, // Identifica quem emitiu o token (ex: nome da API)
+                ValidAudience = jwt.Audience, // Identifica para quem o token foi emitido (ex: nome do cliente)
                 IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.SecretKey)),
                 ClockSkew = TimeSpan.Zero
             };
