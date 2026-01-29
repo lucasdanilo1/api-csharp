@@ -9,20 +9,15 @@ public static class DatabaseInitializer
 {
     public static void Initialize(AppDbContext context, AdminPadraoSettings adminSettings)
     {
-        // AVISO: EnsureDeleted/EnsureCreated são para desenvolvimento/testes apenas
-        // Para produção, use Migrations: dotnet ef migrations add InitialCreate && dotnet ef database update
 
-        // Remove o banco e recria (apenas para desenvolvimento/testes)
         context.Database.EnsureDeleted();
         context.Database.EnsureCreated();
 
-        // Verifica se já existe usuário admin
         if (context.Usuarios.Any())
         {
-            return; // Banco já possui dados
+            return; 
         }
 
-        // Cria usuário admin padrão
         var adminUser = new Usuario
         {
             NomeUsuario = adminSettings.NomeUsuario,
