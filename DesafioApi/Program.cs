@@ -1,9 +1,4 @@
-using DesafioApi.Data;
-using DesafioApi.Entities;
 using DesafioApi.Extensions;
-using DesafioApi.Settings;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Options;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,24 +10,10 @@ builder.Services.AddSwaggerDocumentation();
 
 var app = builder.Build();
 
-using (var scope = app.Services.CreateScope())
+// Inicializa o banco de dados apenas em desenvolvimento
+if (app.Environment.IsDevelopment())
 {
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var adminSettings = scope.ServiceProvider.GetRequiredService<IOptions<AdminPadraoSettings>>().Value;
-
-    db.Database.EnsureDeleted();
-    db.Database.EnsureCreated();
-
-    if (!db.Usuarios.Any())
-    {
-        db.Usuarios.Add(new Usuario
-        {
-            NomeUsuario = adminSettings.NomeUsuario,
-            Email = adminSettings.Email,
-            Senha = adminSettings.Senha
-        });
-        db.SaveChanges();
-    }
+    app.InitializeDatabase();
 }
 
 if (app.Environment.IsDevelopment())

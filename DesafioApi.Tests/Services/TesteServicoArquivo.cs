@@ -268,10 +268,12 @@ public class TesteServicoArquivo
         {
             await File.WriteAllTextAsync(caminhoArquivoTeste, conteudoInicial);
 
-            await _servico.AtualizarArquivoAsync(caminhoArquivoTeste, novoConteudo);
+            var resultado = await _servico.AtualizarArquivoAsync(caminhoArquivoTeste, novoConteudo);
 
             var conteudoFinal = await File.ReadAllTextAsync(caminhoArquivoTeste);
             Assert.Equal(novoConteudo, conteudoFinal);
+            Assert.Equal(nomeArquivoTeste, resultado.NomeArquivo);
+            Assert.Equal(novoConteudo, resultado.Conteudo);
         }
         finally
         {

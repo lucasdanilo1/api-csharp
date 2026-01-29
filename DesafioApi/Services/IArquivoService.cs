@@ -5,5 +5,5 @@ namespace DesafioApi.Services;
 public interface IArquivoService
 {
     Task<LeituraArquivoResponse> LerArquivoAsync(string caminho);
-    Task AtualizarArquivoAsync(string caminho, string novoConteudo);
+    Task<LeituraArquivoResponse> AtualizarArquivoAsync(string caminho, string novoConteudo);
 }

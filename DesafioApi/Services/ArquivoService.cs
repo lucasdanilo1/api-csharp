@@ -32,7 +32,7 @@ public class ArquivoService : IArquivoService
         }
     }
 
-    public async Task AtualizarArquivoAsync(string caminho, string novoConteudo)
+    public async Task<LeituraArquivoResponse> AtualizarArquivoAsync(string caminho, string novoConteudo)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(caminho);
 
@@ -49,6 +49,7 @@ public class ArquivoService : IArquivoService
         try
         {
             await File.WriteAllTextAsync(caminhoCompleto, novoConteudo);
+            return new LeituraArquivoResponse(Path.GetFileName(caminhoCompleto), novoConteudo);
         }
         catch (Exception ex) when (ex is IOException ||
                                    ex is SecurityException ||

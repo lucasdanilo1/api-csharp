@@ -21,7 +21,7 @@ public class ArquivoController(IArquivoService arquivoService) : ControllerBase
     [Authorize]
     public async Task<IActionResult> AtualizarArquivo([FromBody] AtualizarArquivoRequest dto)
     {
-        await arquivoService.AtualizarArquivoAsync(dto.CaminhoArquivo, dto.NovoConteudo);
-        return NoContent();
+        var resultado = await arquivoService.AtualizarArquivoAsync(dto.CaminhoArquivo, dto.NovoConteudo);
+        return Ok(resultado);
     }
 }

@@ -85,4 +85,15 @@ public static class ServiceCollectionExtensions
         services.AddProblemDetails();
         return services;
     }
+
+    public static WebApplication InitializeDatabase(this WebApplication app)
+    {
+        using var scope = app.Services.CreateScope();
+        var context = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var adminSettings = scope.ServiceProvider.GetRequiredService<IOptions<AdminPadraoSettings>>().Value;
+
+        DatabaseInitializer.Initialize(context, adminSettings);
+
+        return app;
+    }
 }
